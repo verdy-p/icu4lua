@@ -365,16 +365,16 @@ static int icu_utf8_char(lua_State *L) {
             luaL_addchar(&buf, (char)(0x80 | ((codePoint >> 6) & 0x3F)));
             luaL_addchar(&buf, (char)(0x80 | (codePoint & 0x3F)));
         }
-        else if (codePoint > 0x110000) {
-            return luaL_argerror(L,i+1,"invalid codepoint");
-        }
-        else {
+        else if (codePoint < 0x110000) {
             // 00000000 000zzzzz yyyyyyyy xxxxxxxx
             // 11110zzz 10zzyyyy 10yyyyxx 10xxxxxx
             luaL_addchar(&buf, (char)(0xF0 | (codePoint >> 18)));
             luaL_addchar(&buf, (char)(0x80 | ((codePoint >> 12) & 0x3F)));
             luaL_addchar(&buf, (char)(0x80 | ((codePoint >> 6) & 0x3F)));
             luaL_addchar(&buf, (char)(0x80 | (codePoint & 0x3F)));
+        }
+        else {
+            return luaL_argerror(L,i+1,"invalid codepoint");
         }
     }
     luaL_pushresult(&buf);
